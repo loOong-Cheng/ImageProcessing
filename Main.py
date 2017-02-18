@@ -153,7 +153,7 @@ class KameraPanel(wx.Panel):
         self.flcoorcameray.append(float(self.coorcameray.GetValue()))
         self.flcoorrealx.append(float(self.coorrealx.GetValue()))
         self.flcoorrealy.append(float(self.coorrealy.GetValue()))
-        self.fl0.append(5.)
+        self.fl0.append(0.)
         self.fl1.append(1.)
 
         self.logger.AppendText(u'摄像头坐标/实际坐标-（最后总共%d个点）：\n' % (self.i + 1))
@@ -167,14 +167,14 @@ class KameraPanel(wx.Panel):
 
         # 矩阵运算
         self.stack_camera = np.row_stack(
-            (self.flcoorcamerax, self.flcoorcameray, self.fl0))
+            (self.flcoorcamerax, self.flcoorcameray, self.fl1))
         self.stack_real = np.row_stack(
             (self.flcoorrealx, self.flcoorrealy, self.fl0, self.fl1))
         self.matrix_camera = np.matrix(self.stack_camera)
         self.matrix_real = np.matrix(self.stack_real)
-        self.matrix_real_T = self.matrix_real.T
-        self.argmatrx = self.matrix_camera.dot(self.matrix_real_T).dot(
-            (self.matrix_real.dot(self.matrix_real_T)).I)
+        self.matrix_camera_T = self.matrix_camera.T
+        self.argmatrx = self.matrix_real.dot(self.matrix_camera_T).dot(
+            (self.matrix_camera.dot(self.matrix_camera_T)).I)
         print self.argmatrx
         pass
 
@@ -189,7 +189,7 @@ class KameraPanel(wx.Panel):
 # 串口读取
     def OnclickReadPorts(self, event):
         self.ser10 = self.ser.read(10)  # read up tp ten bytes
-        #self.ser1 = ser.read()  # read one byte
+        # self.ser1 = ser.read()  # read one byte
         #self.serline = self.ser.readline()
         print '1'
         print self.ser10
